@@ -1,2 +1,5 @@
 # SharpIR
-Arduino Ifra Red Sharp Lib
+Arduino Infra Red Sharp Lib
+
+# Example
+
