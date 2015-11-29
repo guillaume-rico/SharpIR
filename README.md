@@ -10,7 +10,8 @@ Based on an original work of Dr. Marcal Casas-Cartagena .
 
 # Sharp IR Volt Centimeter conversion
 
-## 
+## GP2Y0A02YK0F
+
 | Volt | Distance |
 | 2,8 | 15 |
 | 2,5 | 20 |
@@ -33,6 +34,7 @@ Using MS Excel, we can found folowing formula (For distance > 15cm) :
 Distance = 60.374 X POW(Volt , -1.16)
 
 ## GP2Y0A21YK
+
 | Volt | Distance |
 | 2,6 | 10 |
 | 2,1 | 12 |
