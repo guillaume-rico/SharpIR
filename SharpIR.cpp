@@ -31,7 +31,12 @@
 
 */
 
-#include "Arduino.h"
+#ifdef Arduino
+  #include "Arduino.h"
+#elif defined(SPARK)
+  #include "Particle.h"
+  #include "math.h"
+#endif
 #include "SharpIR.h"
 
 // Initialisation function
@@ -47,7 +52,9 @@ SharpIR::SharpIR(int irPin, int sensorModel) {
     // Define pin as Input
     pinMode (_irPin, INPUT);
     
-    analogReference(DEFAULT);
+    #ifdef ARDUINO
+      analogReference(DEFAULT);
+    #endif
 }
 
 // Sort an array
@@ -84,14 +91,24 @@ int SharpIR::distance() {
     
     if (_model==1080) {
         
-         distanceCM = 27.728 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.2045);
+        // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
+        #ifdef ARDUINO
+          distanceCM = 27.728 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.2045);
+        #elif defined(SPARK)
+          distanceCM = 27.728 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.2045);
+        #endif
 
     } else if (_model==20150){
 
         // Previous formula used by  Dr. Marcal Casas-Cartagena
         // puntualDistance=61.573*pow(voltFromRaw/1000, -1.1068);
-        distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.16);
         
+        // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
+        #ifdef ARDUINO
+          distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.16);
+        #elif defined(SPARK)
+          distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.16);
+        #endif
     }
 
     return distanceCM;
