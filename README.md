@@ -7,10 +7,16 @@ Based on an original work of Dr. Marcal Casas-Cartagena .
  2. Sort values
  3. Convert median value to cm
 
+# Usage
+
+- #include \<SharpIR.h\>
+- SharpIR sharp(ir_analog_pin, model);
+- int dist = sharp.distance();
 
 # Sharp IR Volt Centimeter conversion
 
 ## GP2Y0A02YK0F
+### Model: "20150" [20cm to 150cm]
 
 | Volt | Distance |
 | 2,8 | 15 |
@@ -33,7 +39,8 @@ Using MS Excel, we can found folowing formula (For distance > 15cm) :
 
 Distance = 60.374 X POW(Volt , -1.16)
 
-## GP2Y0A21YK
+## GP2Y0A21YK 
+### Model: "1080" [10cm to 80cm]
 
 | Volt | Distance |
 | 2,6 | 10 |
@@ -59,3 +66,11 @@ Using MS Excel, we can found folowing formula (For distance > 10cm) :
 
 Distance = 29.988 X POW(Volt , -1.173)
 
+## GP2Y0A710K0F
+### Model: "100500" [100cm to 500cm]
+
+Based on the SHARP datasheet we can calculate the linear function: 
+`y = 137500x + 1125` 
+which gives us: 
+`1 / ((Volt - 1125) / 137500) = distance_in_cm`
+(For distance > 100cm)
