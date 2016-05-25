@@ -10,6 +10,9 @@
     + Definition of number of sample in .h
     + Define IR pin as input
 
+    Version : 1.1 : Thibaut Mauon
+    + Add SHARP GP2Y0A710K0F for 100cm to 500cm by Thibaut Mauron
+
 	https://github.com/guillaume-rico/SharpIR
     
     Original comment from Dr. Marcal Casas-Cartagena :
@@ -28,7 +31,6 @@
    Reading 25 times and return a mean distance takes 53 ms. For my application of the sensor is fast enough.
    This library has the formulas to work with the GP2Y0A21Y and the GP2Y0A02YK sensors but exanding it for
    other sensors is easy enough.
-
 */
 
 #ifdef Arduino
@@ -42,9 +44,11 @@
 // Initialisation function
 //  + irPin : is obviously the pin where the IR sensor is attached
 //  + sensorModel is a int to differentiate the two sensor models this library currently supports:
-//    1080 is the int for the GP2Y0A21Y and 20150 is the int for GP2Y0A02YK. The numbers reflect the
-//    distance range they are designed for (in cm)
-SharpIR::SharpIR(int irPin, int sensorModel) {
+//    > 1080 is the int for the GP2Y0A21Y and 
+//    > 20150 is the int for GP2Y0A02YK and 
+//    > 100500 is the long for GP2Y0A710K0F
+//    The numbers reflect the distance range they are designed for (in cm)
+SharpIR::SharpIR(int irPin, long sensorModel) {
   
     _irPin=irPin;
     _model=sensorModel;
@@ -78,6 +82,7 @@ int SharpIR::distance() {
 
     int ir_val[NB_SAMPLE];
     int distanceCM;
+    float current;
 
 
     for (int i=0; i<NB_SAMPLE; i++){
@@ -109,6 +114,24 @@ int SharpIR::distance() {
         #elif defined(SPARK)
           distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.16);
         #endif
+
+    } else if (_model==100500){
+        
+        #ifdef ARDUINO
+          current = map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000);
+        #elif defined(SPARK)
+          current = map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000);
+        #endif
+        // use the inverse number of distance like in the datasheet (1/L)
+        // y = mx + b = 137500*x + 1125 
+        // x = (y - 1125) / 137500
+        // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
+        if (current < 1400 || current > 3300) {
+          //false data
+          distanceCM = 0;
+        } else {
+          distanceCM = 1.0 / (((current - 1125.0) / 1000.0) / 137.5);
+        }
     }
 
     return distanceCM;
