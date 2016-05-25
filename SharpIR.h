@@ -26,7 +26,7 @@ class SharpIR
 {
   public:
 
-    SharpIR (int irPin, int sensorModel);
+    SharpIR (int irPin, long sensorModel);
     int distance();
 
   private:
@@ -34,7 +34,7 @@ class SharpIR
     void sort(int a[], int size);
     
     int _irPin;
-    int _model;
+    long _model;
 };
 
 #endif
