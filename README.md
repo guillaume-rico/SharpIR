@@ -44,6 +44,7 @@ Distance = 60.374 X POW(Volt , -1.16)
 ### Model: "1080" [10cm to 80cm]
 
 | Volt | Distance |
+| ---- | -------- |
 | 2,6 | 10 |
 | 2,1 | 12 |
 | 1,85 | 14 |
