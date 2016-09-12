@@ -19,6 +19,7 @@ Based on an original work of Dr. Marcal Casas-Cartagena .
 ### Model: "20150" [20cm to 150cm]
 
 | Volt | Distance |
+| ---- | -------- |
 | 2,8 | 15 |
 | 2,5 | 20 |
 | 2 | 30 |
