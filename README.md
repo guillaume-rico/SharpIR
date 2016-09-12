@@ -13,6 +13,12 @@ Based on an original work of Dr. Marcal Casas-Cartagena .
 - SharpIR sharp(ir_analog_pin, model);
 - int dist = sharp.distance();
 
+Model : 
+- GP2Y0A02YK0F --> "20150"
+- GP2Y0A21YK --> "1080"
+- GP2Y0A710K0F --> "100500"
+- GP2YA41SK0F --> "430"
+
 # Sharp IR Volt Centimeter conversion
 
 ## GP2Y0A02YK0F
@@ -36,7 +42,7 @@ Based on an original work of Dr. Marcal Casas-Cartagena .
 | 0,455 | 140 |
 | 0,435 | 150 |
 
-Using MS Excel, we can found folowing formula (For distance > 15cm) :
+Using MS Excel, we can calculate function (For distance > 15cm) :
 
 Distance = 60.374 X POW(Volt , -1.16)
 
@@ -64,7 +70,7 @@ Distance = 60.374 X POW(Volt , -1.16)
 | 0,45 | 75 |
 | 0,42 | 80 |
 
-Using MS Excel, we can found folowing formula (For distance > 10cm) :
+Using MS Excel, we can calculate function (For distance > 10cm) :
 
 Distance = 29.988 X POW(Volt , -1.173)
 
@@ -76,3 +82,10 @@ Based on the SHARP datasheet we can calculate the linear function:
 which gives us: 
 `1 / ((Volt - 1125) / 137500) = distance_in_cm`
 (For distance > 100cm)
+
+## GP2YA41SK0F ( <=> GP2D120 )
+### Model: "430" [4cm to 30cm]
+
+Based on the SHARP datasheet we can calculate the function (For distance > 3cm) :
+
+Distance = 12.08 X POW(Volt , -1.058)

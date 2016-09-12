@@ -115,6 +115,15 @@ int SharpIR::distance() {
           distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.16);
         #endif
 
+    } else if (_model==430){
+
+        // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
+        #ifdef ARDUINO
+          distanceCM = 12.08 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.058);
+        #elif defined(SPARK)
+          distanceCM = 12.08 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.058);
+        #endif
+        
     } else if (_model==100500){
         
         #ifdef ARDUINO
