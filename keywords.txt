@@ -13,7 +13,7 @@ SharpIR	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-distance KEYWORD2
+distance	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
