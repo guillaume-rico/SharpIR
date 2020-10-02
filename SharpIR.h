@@ -15,6 +15,7 @@
 #define SharpIR_h
 
 #define NB_SAMPLE 25
+#define USE_MEDOFMEDIANS true
 
 #ifdef ARDUINO
   #include "Arduino.h"
@@ -35,6 +36,8 @@ class SharpIR
     
     int _irPin;
     long _model;
+    void partialSort(int a[], int min, int max);
+    int medianOfMedians(int a[], int size);
 };
 
 #endif
