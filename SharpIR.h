@@ -7,6 +7,8 @@
 	
     Version : 1.0 : Guillaume Rico
 
+    Version : 1.2 : Archery2000
+
 	https://github.com/guillaume-rico/SharpIR
 
 */
@@ -15,6 +17,7 @@
 #define SharpIR_h
 
 #define NB_SAMPLE 25
+#define USE_MEDOFMEDIANS false
 
 #ifdef ARDUINO
   #include "Arduino.h"
@@ -35,6 +38,8 @@ class SharpIR
     
     int _irPin;
     long _model;
+    void partialSort(int a[], int min, int max);
+    int medianOfMedians(int a[], int size);
 };
 
 #endif

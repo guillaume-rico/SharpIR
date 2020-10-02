@@ -13,6 +13,9 @@
     Version : 1.1 : Thibaut Mauon
     + Add SHARP GP2Y0A710K0F for 100cm to 500cm by Thibaut Mauron
 
+    Version : 1.2 : Archery2000
+    + Add Median of Medians algorithm to speed up sensor reading computation
+
 	https://github.com/guillaume-rico/SharpIR
     
     Original comment from Dr. Marcal Casas-Cartagena :
@@ -80,9 +83,10 @@ void SharpIR::sort(int a[], int size) {
 // Read distance and compute it
 int SharpIR::distance() {
 
-    int ir_val[NB_SAMPLE];
+    int ir_val[NB_SAMPLE] = {};
     int distanceCM;
     float current;
+    int median;
 
 
     for (int i=0; i<NB_SAMPLE; i++){
@@ -90,17 +94,21 @@ int SharpIR::distance() {
         ir_val[i] = analogRead(_irPin);
     }
     
-    // Sort it 
-    sort(ir_val,NB_SAMPLE);
-
+    // Get the approx median
+    #if USE_MEDOFMEDIANS
+        median = medianOfMedians(ir_val, NB_SAMPLE);
+    #else
+        sort(ir_val, NB_SAMPLE);
+        median = ir_val[NB_SAMPLE/2];
+    #endif
     
     if (_model==1080) {
         
         // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
         #ifdef ARDUINO
-          distanceCM = 29.988 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.173);
+          distanceCM = 29.988 * pow(map(median, 0, 1023, 0, 5000)/1000.0, -1.173);
         #elif defined(SPARK)
-          distanceCM = 29.988 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.173);
+          distanceCM = 29.988 * pow(map(median, 0, 4095, 0, 5000)/1000.0, -1.173);
         #endif
 
     } else if (_model==20150){
@@ -110,26 +118,26 @@ int SharpIR::distance() {
         
         // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
         #ifdef ARDUINO
-          distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.16);
+          distanceCM = 60.374 * pow(map(median, 0, 1023, 0, 5000)/1000.0, -1.16);
         #elif defined(SPARK)
-          distanceCM = 60.374 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.16);
+          distanceCM = 60.374 * pow(map(median, 0, 4095, 0, 5000)/1000.0, -1.16);
         #endif
 
     } else if (_model==430){
 
         // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
         #ifdef ARDUINO
-          distanceCM = 12.08 * pow(map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000)/1000.0, -1.058);
+          distanceCM = 12.08 * pow(map(median, 0, 1023, 0, 5000)/1000.0, -1.058);
         #elif defined(SPARK)
-          distanceCM = 12.08 * pow(map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000)/1000.0, -1.058);
+          distanceCM = 12.08 * pow(map(median, 0, 4095, 0, 5000)/1000.0, -1.058);
         #endif
         
     } else if (_model==100500){
         
         #ifdef ARDUINO
-          current = map(ir_val[NB_SAMPLE / 2], 0, 1023, 0, 5000);
+          current = map(median, 0, 1023, 0, 5000);
         #elif defined(SPARK)
-          current = map(ir_val[NB_SAMPLE / 2], 0, 4095, 0, 5000);
+          current = map(median, 0, 4095, 0, 5000);
         #endif
         // use the inverse number of distance like in the datasheet (1/L)
         // y = mx + b = 137500*x + 1125 
@@ -146,6 +154,41 @@ int SharpIR::distance() {
     return distanceCM;
 }
 
+int SharpIR::medianOfMedians(int a[], int size){
+  int ans;
+  int numMedians = size / 5;
+  int* medians = new int[numMedians];
+  for(int i = 0; i < numMedians; i++){
+    partialSort(a, i * 5, i * 5 + 4);
+    medians[i] = a[i * 5 + 2];
+  }
+  if(numMedians > 25){
+    ans = medianOfMedians(medians, numMedians);
+  }else{
+    sort(medians, numMedians);
+    ans = medians[numMedians/2];
+  }
+  delete [] medians;
+  medians = nullptr;
+  return ans;
+}
 
+// Sort a partial array
+void SharpIR::partialSort(int a[], int min, int max) {
+    int t;
+    bool flag;
+    for(int i=min; i<max; i++) {
+        flag = true;
+        for(int o=min; o<(max-i); o++) {
+            if(a[o] > a[o+1]) {
+                t = a[o];
+                a[o] = a[o+1];
+                a[o+1] = t;
+                flag = false;
+            }
+        }
+        if (flag) break;
+    }
+}
 
 
