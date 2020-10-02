@@ -7,6 +7,8 @@
 	
     Version : 1.0 : Guillaume Rico
 
+    Version : 1.2 : Archery2000
+
 	https://github.com/guillaume-rico/SharpIR
 
 */
@@ -15,7 +17,7 @@
 #define SharpIR_h
 
 #define NB_SAMPLE 25
-#define USE_MEDOFMEDIANS true
+#define USE_MEDOFMEDIANS false
 
 #ifdef ARDUINO
   #include "Arduino.h"

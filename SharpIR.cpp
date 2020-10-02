@@ -13,6 +13,9 @@
     Version : 1.1 : Thibaut Mauon
     + Add SHARP GP2Y0A710K0F for 100cm to 500cm by Thibaut Mauron
 
+    Version : 1.2 : Archery2000
+    + Add Median of Medians algorithm to speed up sensor reading computation
+
 	https://github.com/guillaume-rico/SharpIR
     
     Original comment from Dr. Marcal Casas-Cartagena :
@@ -83,6 +86,7 @@ int SharpIR::distance() {
     int ir_val[NB_SAMPLE] = {};
     int distanceCM;
     float current;
+    int median;
 
 
     for (int i=0; i<NB_SAMPLE; i++){
@@ -91,13 +95,12 @@ int SharpIR::distance() {
     }
     
     // Get the approx median
-    int median;
-    if(USE_MEDOFMEDIANS){
+    #if USE_MEDOFMEDIANS
         median = medianOfMedians(ir_val, NB_SAMPLE);
-    }else{
+    #else
         sort(ir_val, NB_SAMPLE);
         median = ir_val[NB_SAMPLE/2];
-    }
+    #endif
     
     if (_model==1080) {
         
@@ -152,14 +155,19 @@ int SharpIR::distance() {
 }
 
 int SharpIR::medianOfMedians(int a[], int size){
+  int ans;
   int numMedians = size / 5;
   int* medians = new int[numMedians];
   for(int i = 0; i < numMedians; i++){
     partialSort(a, i * 5, i * 5 + 4);
     medians[i] = a[i * 5 + 2];
   }
-  sort(medians, numMedians);
-  int ans = medians[numMedians/2];
+  if(numMedians > 25){
+    ans = medianOfMedians(medians, numMedians);
+  }else{
+    sort(medians, numMedians);
+    ans = medians[numMedians/2];
+  }
   delete [] medians;
   medians = nullptr;
   return ans;
