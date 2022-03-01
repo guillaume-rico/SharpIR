@@ -18,6 +18,7 @@ Model :
 - GP2Y0A21YK --> "1080"
 - GP2Y0A710K0F --> "100500"
 - GP2YA41SK0F --> "430"
+- GP2Y0A51SK0F --> "215"
 
 # Sharp IR Volt Centimeter conversion
 
