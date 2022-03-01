@@ -132,6 +132,16 @@ int SharpIR::distance() {
           distanceCM = 12.08 * pow(map(median, 0, 4095, 0, 5000)/1000.0, -1.058);
         #endif
         
+    } else if (_model==215){
+
+        // Different expressions required as the Photon has 12 bit ADCs vs 10 bit for Arduinos
+        // puntualDistance=5.2819*pow(voltFromRaw/1000, -1.161);
+        #ifdef ARDUINO
+          distanceCM = 5.2819 * pow(map(median, 0, 1023, 0, 5000)/1000.0, -1.161);
+        #elif defined(SPARK)
+          distanceCM = 5.2819 * pow(map(median, 0, 4095, 0, 5000)/1000.0, -1.161);
+        #endif
+        
     } else if (_model==100500){
         
         #ifdef ARDUINO
