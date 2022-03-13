@@ -18,6 +18,7 @@ Model :
 - GP2Y0A21YK --> "1080"
 - GP2Y0A710K0F --> "100500"
 - GP2YA41SK0F --> "430"
+- GP2Y0A51SK0F --> "215"
 
 # Sharp IR Volt Centimeter conversion
 
@@ -89,3 +90,27 @@ which gives us:
 Based on the SHARP datasheet we can calculate the function (For distance > 3cm) :
 
 Distance = 12.08 X POW(Volt , -1.058)
+
+## GP2Y0A51SK0F 
+### Model: "215" [2cm to 15cm]
+
+| Volt | Distance |
+| ---- | -------- |
+| 2.08 | 2 |
+| 1.68 | 3 |
+| 1.32 | 4 |
+| 1.06 | 5 |
+| 0.91 | 6 |
+| 0.81 | 7 |
+| 0.72 | 8 |
+| 0.66 | 9 |
+| 0.59 | 10 |
+| 0.52 | 11 |
+| 0.48 | 12 |
+| 0.45 | 13 |
+| 0.43 | 14 |
+| 0.39 | 15 |
+
+Using MS Excel, we can calculate function (For distance > 2cm) :
+
+Distance = 5.2819 X POW(Volt , -1.161)
